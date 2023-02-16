@@ -96,7 +96,7 @@ prog_args = ['python3'] + prog_args
 for test in tests:
     vinput, voutput = test
     p = Popen(prog_args, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-    stdout_data = p.communicate(input=vinput.encode())[0]
+    stdout_data, stderr_data = p.communicate(input=vinput.encode())
 
     got = stdout_data.decode().splitlines()
     expected = voutput.splitlines()
@@ -104,6 +104,9 @@ for test in tests:
     if got != expected:
         print("<Input:>")
         print(vinput)
+        if(stderr_data):
+            print("<Debug:>")
+            print(stderr_data.decode())
         print("<Expected:>")
         print('\n'.join(expected))
         print("<Got:>")
