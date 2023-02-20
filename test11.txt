@@ -1,0 +1,77 @@
+t11.py === ---
+===
+push 1
+back
+exit
+---
+ok
+1
+bye
+===
+size
+push 1
+size
+push 2
+size
+push 3
+size
+exit
+---
+0
+ok
+1
+ok
+2
+ok
+3
+bye
+===
+push 3
+push 14
+size
+clear
+push 1
+back
+push 2
+back
+pop
+size
+pop
+size
+exit
+---
+ok
+ok
+2
+ok
+ok
+1
+ok
+2
+2
+1
+1
+0
+bye
+===
+push 5
+push 7
+size
+pop
+size
+back
+pop
+size
+back
+exit
+---
+ok
+ok
+2
+7
+1
+5
+5
+0
+error
+bye
