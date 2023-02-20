@@ -1,10 +1,39 @@
 #!/usr/bin/env python3
+"""
+./test.py  test1.txt
+
+В первой строке файла test1.txt имя файла с программой,
+разделитель примеров, разделитель секции ответов.
+
+###
+
+Пример файла теста:
+
+demo1.py === ---
+===
+5
+1 2 3 4 5
+---
+4
+===
+5
+1 2 3 4 1
+---
+-1
+===
+1
+2
+---
+0
+"""
 
 import sys
 import argparse
 from subprocess import Popen, PIPE, STDOUT
 
-parser = argparse.ArgumentParser()
+description, epilog = __doc__.split('###')
+parser = argparse.ArgumentParser(description=description, epilog=epilog,
+                formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument('testfile', nargs='?', type=argparse.FileType('r'),
                     default=sys.stdin,
                     help='formatted file with test examples')
@@ -14,8 +43,10 @@ if args.testfile == sys.stdin and sys.stdin.isatty():  # user forgot to provide 
     parser.print_help()
     exit(0)
 
-
-def parse_testfile(testfile, default_input_marker='===', default_output_marker='---'):
+def parse_testfile(testfile,
+            default_input_marker='===',
+            default_output_marker='---',
+            default_break_marker='xxx'):
     """ Example:
     t1-2.py  === ---
     ===
@@ -47,6 +78,8 @@ def parse_testfile(testfile, default_input_marker='===', default_output_marker='
         lines_in = []
         lines_out = []
 
+        
+
         # reading input
         for line in file:
             lineno += 1
@@ -69,7 +102,10 @@ def parse_testfile(testfile, default_input_marker='===', default_output_marker='
         for line in file:
             lineno += 1
             line = str(line).rstrip('\n\r')  # strip EOL
-
+            if line == default_break_marker:
+                eof = True
+                break
+            
             if line == input_marker:
                 break
             elif line == output_marker:
@@ -79,13 +115,11 @@ def parse_testfile(testfile, default_input_marker='===', default_output_marker='
         else:
             eof = True
 
-
         # if lines_in and lines_out:
         test = '\n'.join(lines_in), '\n'.join(lines_out)
         tests.append(test)
 
     return prog, tests
-
 
 prog, tests = parse_testfile(args.testfile)
 
@@ -97,11 +131,12 @@ for test in tests:
     vinput, voutput = test
     p = Popen(prog_args, stdout=PIPE, stdin=PIPE, stderr=PIPE)
     stdout_data, stderr_data = p.communicate(input=vinput.encode())
-
+    
+    errno = p.returncode
     got = stdout_data.decode().splitlines()
     expected = voutput.splitlines()
     
-    if got != expected:
+    if got != expected or errno:
         print("<Input:>")
         print(vinput)
         if(stderr_data):
@@ -112,4 +147,3 @@ for test in tests:
         print("<Got:>")
         print('\n'.join(got))
         print()
-
