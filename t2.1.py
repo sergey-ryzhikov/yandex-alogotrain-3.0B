@@ -9,8 +9,6 @@ letters = 'abcdefghijklmnopqrstuvwxyz'
 assert len(set(letters)) == 26, "Error: letters"
 
 
-
-
 def max_beauty(text, nrepl=0):
     maxwidth = 0
     # stats = {a:[0,0] for a in letters}  # {letter: [replacements, width]}
