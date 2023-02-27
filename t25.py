@@ -1,30 +1,26 @@
 n = int(input())
 vals = list(sorted(map(int, input().split())))
-
 dist = [a-b for a,b in zip(vals[1:], vals[:-1])]
 
 
-def mindist(dist):
-    assert len(dist) >= 2, f"{len(dist)=}"
+def solve(dist):
+    acc_true  = dist[0]  # The first is always True
+    acc_false = float('inf')  # fake branch to simplify the loop
 
-    def func(i=1, prev=(False, True)):
-        if i >= len(dist) - 1:
-            return 0  # End
+    for i in range(1, len(dist)-1):
+        # swap
+        acc_false, acc_true = acc_true, acc_false
 
-        score_false = score_true = float('inf')
+        # check new "True" candidate
+        if acc_false < acc_true:  
+            acc_true = acc_false  # drop the other branch
+        acc_true += dist[i]  # "True" branch
 
-        # False
-        if prev[1] != False:
-            score_false = func(i+1, (prev[1], False))
-        # True
-        if prev != (True, True):
-            score_true = func(i+1, (prev[1], True))
-            score_true += dist[i]
-        
-        return min(score_false, score_true)
+    ret = min(acc_false, acc_true)
+    
+    if len(dist) > 1:
+        ret += dist[-1]  # The last one is always True
 
-    acc = dist[0] + dist[-1]  # First and last are always True
-    acc += func()
-    return acc
+    return ret
 
-print(mindist(dist))
+print(solve(dist))
