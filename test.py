@@ -78,8 +78,6 @@ def parse_testfile(testfile,
         lines_in = []
         lines_out = []
 
-        
-
         # reading input
         for line in file:
             lineno += 1
@@ -115,8 +113,10 @@ def parse_testfile(testfile,
         else:
             eof = True
 
+       
         # if lines_in and lines_out:
         test = '\n'.join(lines_in), '\n'.join(lines_out)
+        # print(test)
         tests.append(test)
 
     return prog, tests
@@ -134,7 +134,7 @@ for test in tests:
     
     errno = p.returncode
     got = stdout_data.decode().splitlines()
-    expected = voutput.splitlines()
+    expected = (voutput + '\n').splitlines()  # FIX: empty line in the end
     
     if got != expected or errno:
         print("<Input:>")
