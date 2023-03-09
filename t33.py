@@ -2,7 +2,7 @@ import sys
 
 nvert, nedg = map(int, input().split())
 
-graph = {}
+graph = {x: [] for x in range(nvert+1)}
 for line in sys.stdin.readlines():
     line = line.strip()
     if not line:
@@ -12,7 +12,7 @@ for line in sys.stdin.readlines():
     if a == b:
         raise ValueError(f'{a=}, {b=}')
     graph.setdefault(a, []).append(b)
-    graph.setdefault(b, [])
+    graph.setdefault(b, []).append(a)
 
 
 def solve(graph):
@@ -36,7 +36,7 @@ def solve(graph):
             parent_color = colors[s]
             child_color = next_color(parent_color)
             for child in children:
-                cc = colors[child]  # actual child color
+                cc = colors[child]  # child color
                 if cc == child_color:
                     continue
                 elif cc == parent_color:
