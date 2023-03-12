@@ -1,13 +1,9 @@
 import sys
 
-m = int(input())
-n = int(input())
-
-assert 1 <= m, f"err: {m=}"
-assert 0 <= n, f"err: {n=}"
+nsect = int(input())
+npart = int(input())
 
 lines = sys.stdin.readlines()
-assert len(lines) == n, f"err: {n=}, but {len(lines)} lines"
 
 partitions = []  # we have at most 1000 partitions, so just put them in a list
 
